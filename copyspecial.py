@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # give credits
-__author__ = "Lori Henderson, Nikal and Amanda (group study session)"
+__author__ = "Lori Henderson, Nikal and Amanda (group study session), Joseph helped me figure out how to join my dirname and my file"
 
 import re
 import os
@@ -20,15 +20,19 @@ import argparse
 
 def get_special_paths(dirname):
     """Given a dirname, returns a list of all its special files."""
+
+    # paths = os.listdir(dirname)
+
     special_files = []
     for file in os.listdir(dirname):
         special_file = re.findall(r'__(\w+)__', file)
         if special_file:
-            special_files.append(os.path.abspath(file))
+            special_files.append(os.path.abspath(os.path.join(dirname, file)))
     return special_files
 
 
 def copy_to(path_list, dest_dir):
+    """Copying all the given file paths to dest_dir"""
     if not os.path.isdir(dest_dir):
         os.makedirs(dest_dir)
     for path in path_list:
@@ -37,6 +41,7 @@ def copy_to(path_list, dest_dir):
 
 
 def zip_to(path_list, dest_zip):
+    """Zip all the given paths into a new zip file"""
     for path in path_list:
         print(f'zip -j, {dest_zip}, {path}')
         subprocess.run(['zip', '-j', dest_zip, path])  #read more about -j
@@ -70,8 +75,7 @@ def main(args):
     elif ns.tozip:
         zip_to(path_list, ns.tozip)
     else:
-        for path in path_list:
-            print(path)
+        print("\n".join(path_list))
 
 
 if __name__ == "__main__":
